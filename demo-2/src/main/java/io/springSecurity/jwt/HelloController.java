@@ -10,6 +10,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import io.springSecurity.jwt.models.AuthenticationResponse;
 import io.springSecurity.jwt.models.AuthenticationdRequest;
 import io.springSecurity.jwt.models.DAOUser;
+import io.springSecurity.jwt.GlobalException.CustomException.EmptyResultException;
 import io.springSecurity.jwt.Repository.CustomerServiceRepo;
 import io.springSecurity.jwt.Util.*;
 
@@ -66,5 +68,13 @@ public class HelloController {
 	@GetMapping("/api/getAllUserRegisterd")
 	public List<DAOUser> getAllUserRegisterd(){
 		return cutomerservice.getAllUserRegisterd();
+	}
+	@GetMapping("/api/getUser/{name}")
+	public List<DAOUser> getParticularUser(@PathVariable String name) {
+		List<DAOUser> user=cutomerservice.getUser(name);
+		if(user.isEmpty()) {
+			throw new EmptyResultException("404", "Customer Not Found");
+		}
+		return cutomerservice.getUser(name);
 	}
 }
